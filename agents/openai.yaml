@@ -1,0 +1,7 @@
+interface:
+  display_name: "Apks Unlocker skill"
+  short_description: "فحص APK وDart Snapshot وتطوير تعديلات مصرّح بها"
+  default_prompt: "استخدم $for-devs لفحص APK المرفق داخل نطاقه فقط، ثم اسألني عن الميزات المصرّح بتطويرها."
+
+policy:
+  allow_implicit_invocation: true
