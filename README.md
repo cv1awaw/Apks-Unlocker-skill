@@ -4,7 +4,7 @@
 
 **الاسم لا يعني فتح الاشتراكات أو صلاحيات الإدارة.** لا تتضمن المهارة تجاوز الدفع أو الترخيص أو DRM أو المصادقة، ولا منح VIP/admin ذاتياً. تدعم فحص التطبيقات وتطوير واجهاتها وأدواتها التشخيصية والميزات المحلية المصرّح بها.
 
-**اسم العرض:** Apks Unlocker skill · **الاستدعاء:** `$for-devs` · **الإصدار:** 1.0.0
+**اسم العرض:** Apks Unlocker skill · **الاستدعاء:** `$for-devs` · **الإصدار:** 1.0.1
 
 ## ماذا تعمل؟
 
@@ -20,10 +20,12 @@
 
 تحتاج Python 3.11 أو أحدث وGit. يوصى بـJava 17 للأدوات الإضافية. SDK وWSL/Blutter مطلوبان فقط للمسارات التي تستخدمهما.
 
+راجع [إقرار الاستخدام المصرّح به](TERMS_OF_USE.md) قبل تشغيل أمر القبول أدناه. يُطلب الإقرار مرة واحدة، ويُحفظ محلياً دون بيانات شخصية. تنزيل المستودع وحده لا يُعد قبولاً. تُنفّذ التعديلات العادية المخوّلة دون إعادة طلب التأكيد حين يكون نطاقها واضحاً؛ الإقرار ليس موافقة شاملة على كل طلب مستقبلي.
+
 ```powershell
 $skillDir = Join-Path $env:USERPROFILE '.codex/skills/for-devs'
 git clone https://github.com/cv1awaw/Apks-Unlocker-skill.git "$skillDir"
-python "$skillDir/scripts/setup_tools.py" --download-tools
+python "$skillDir/scripts/setup_tools.py" --download-tools --accept-authorized-use
 & "$skillDir/.venv/Scripts/python.exe" "$skillDir/scripts/check_tools.py" --probe
 ```
 

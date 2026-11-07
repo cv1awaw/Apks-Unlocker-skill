@@ -40,3 +40,7 @@ Use an isolated Python environment and `requirements.txt`. Obtain dependencies f
 - [Apktool installation](https://apktool.org/docs/install/): a verified 2.12.1 JAR is copied privately. Current upstream docs may describe another major version; installed help is authoritative for local options.
 - [Blutter upstream](https://github.com/worawit/blutter): Android arm64 AOT analysis with matching Dart runtime. Local cache includes 3.13.2; this does not imply arbitrary APK support.
 - [Android tools](https://developer.android.com/tools): use the existing SDK or a requested installation. Do not silently accept licenses or download multiple runtime/SDK versions while guessing.
+
+## Setup acknowledgment
+
+Read [TERMS_OF_USE.md](../TERMS_OF_USE.md). The installer requires an explicit interactive confirmation or --accept-authorized-use once. The local .local/authorized-use.json record is ignored by Git; changed terms require review again. This declares usage scope, not server authority or blanket approval of future actions.

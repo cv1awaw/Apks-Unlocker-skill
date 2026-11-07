@@ -11,8 +11,10 @@ import subprocess
 import sys
 import urllib.request
 import zipfile
+from datetime import datetime,timezone
 
 ROOT=Path(__file__).resolve().parents[1]
+VERSION='1.0.1'
 APKTOOL_URL='https://github.com/iBotPeaches/Apktool/releases/download/v2.12.1/apktool_2.12.1.jar'
 APKTOOL_SHA='66cf4524a4a45a7f56567d08b2c9b6ec237bcdd78cee69fd4a59c8a0243aeafa'
 JADX_URL='https://github.com/skylot/jadx/releases/download/v1.5.6/jadx-1.5.6.zip'
@@ -69,12 +71,36 @@ def extract_vendor(archive,target):
 
 def version_key(p):return tuple(int(x) for x in re.findall(r'\d+',p.name))
 
+def acknowledge_authorized_use(accepted=False,root=ROOT):
+    """An explicit, local usage declaration; never infer consent from a download."""
+    terms=root/'TERMS_OF_USE.md';expected=digest(terms);folder=root/'.local';record=folder/'authorized-use.json'
+    if folder.is_symlink() or record.is_symlink():raise ValueError('Acknowledgment symlink refused')
+    if record.exists():
+        try:
+            old=json.loads(record.read_text(encoding='utf-8'))
+            if old.get('accepted') is True and old.get('terms_sha256')==expected:return True
+        except (ValueError,OSError):pass
+    method='explicit_cli_flag'
+    if not accepted:
+        print(terms.read_text(encoding='utf-8'))
+        if not sys.stdin.isatty():
+            print('Review TERMS_OF_USE.md, then use --accept-authorized-use. No installation changes were made.')
+            return False
+        accepted=input('Confirm ownership/authorization and the stated scope? [y/N] ').strip().lower() in ('y','yes')
+        method='interactive_confirmation'
+    if not accepted:return False
+    folder.mkdir(exist_ok=True)
+    record.write_text(json.dumps({'accepted':True,'terms_sha256':expected,'accepted_at_utc':datetime.now(timezone.utc).isoformat(),'method':method,'scope':'authorized app/source development only; no third-party rights granted'},indent=2)+'\n',encoding='utf-8')
+    return True
+
 def main():
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--download-tools',action='store_true',help='Fetch the two pinned official vendor artifacts')
     parser.add_argument('--skip-python-install',action='store_true',help='Only configure/check tools; use an already provisioned environment')
     parser.add_argument('--sdk',type=Path)
+    parser.add_argument('--accept-authorized-use',action='store_true',help='Explicitly acknowledge TERMS_OF_USE.md after reviewing it')
     args=parser.parse_args()
+    if not acknowledge_authorized_use(args.accept_authorized_use):return 2
     venv=ROOT/'.venv';python=venv/('Scripts/python.exe' if os.name=='nt' else 'bin/python')
     if venv.is_symlink():raise ValueError('Python environment symlink refused')
     if not python.exists():run([sys.executable,'-m','venv',venv])
@@ -104,11 +130,11 @@ def main():
     if blutter:
         for version in ['3.13.2']:
             if subprocess.run([wsl,'-d','Ubuntu','--','test','-x','/root/blutter/bin/blutter_dartvm'+version+'_android_arm64'],capture_output=True,timeout=20).returncode==0:cached.append(version)
-    config={'version':'1.0.0','java_executable':shutil.which('java'),'sdk_root':str(sdk) if sdk.is_dir() else None,'build_tools':str(build[-1]) if build else None,'android_jar':str(platforms[-1]) if platforms else None,'apktool_jar':str(apktool) if apktool.exists() else None,'jadx_jar':str(jadx) if jadx.exists() else None,'wsl_executable':wsl,'wsl_distribution':'Ubuntu' if blutter else None,'blutter_root':'/root/blutter' if blutter else None,'blutter_cached_dart_versions':cached,'tool_sources':{'apktool':{'url':APKTOOL_URL,'sha256':APKTOOL_SHA},'jadx':{'url':JADX_URL,'archive_sha256':JADX_ARCHIVE_SHA,'jar_sha256':JADX_JAR_SHA}}}
+    config={'version':VERSION,'java_executable':shutil.which('java'),'sdk_root':str(sdk) if sdk.is_dir() else None,'build_tools':str(build[-1]) if build else None,'android_jar':str(platforms[-1]) if platforms else None,'apktool_jar':str(apktool) if apktool.exists() else None,'jadx_jar':str(jadx) if jadx.exists() else None,'wsl_executable':wsl,'wsl_distribution':'Ubuntu' if blutter else None,'blutter_root':'/root/blutter' if blutter else None,'blutter_cached_dart_versions':cached,'tool_sources':{'apktool':{'url':APKTOOL_URL,'sha256':APKTOOL_SHA},'jadx':{'url':JADX_URL,'archive_sha256':JADX_ARCHIVE_SHA,'jar_sha256':JADX_JAR_SHA}}}
     dest=tools/'toolchain.json'
     if dest.is_symlink():raise ValueError('Configuration symlink refused')
     dest.write_text(json.dumps(config,indent=2)+'\n',encoding='utf-8')
     print('Ready. No global PATH, SDK, signing key, account or Codex settings were modified.')
     print('Check readiness with:',python,ROOT/'scripts/check_tools.py','--probe')
 
-if __name__=='__main__':main()
+if __name__=='__main__':raise SystemExit(main())

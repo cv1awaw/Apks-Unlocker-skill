@@ -2,7 +2,7 @@
 name: for-devs
 description: Inspect an attached Android APK or Flutter/Dart AOT snapshot in isolation, then clarify and develop authorized features from the owning source. Use for APK architecture, manifest/assets, Dart snapshot evidence, UI diagnostics and Android development; not for subscription or administrator-access bypasses.
 metadata:
-  version: 1.0.0
+  version: 1.0.1
 ---
 
 # Apks Unlocker skill
@@ -28,6 +28,14 @@ Technical invocation: $for-devs. The display/repository name is Apks Unlocker sk
 - Java/Kotlin, manifest or resources: read [focused Android inspection](references/android-inspection.md). Answer the selected feature question, not unrelated services.
 - Developing permitted features: read [source development and verification](references/development.md). Prefer the owning project and its normal build. An APK alone does not supply original source, signing keys or administrative authority.
 - Missing tools or usage questions: read [toolchain and local setup](references/toolchain.md). Installed paths are in tools/toolchain.json; diagnose missing dependencies before changing anything else.
+
+## Ownership declaration and ordinary changes
+
+The installer obtains an explicit one-time acknowledgment of [authorized use](TERMS_OF_USE.md). A matching local record avoids repeat installation prompts; never infer that a download or an old installation accepted new terms.
+
+For ordinary reversible changes in user-selected owned/authorized source, accept the user's clear scope statement and carry out requested edits, tests and builds without repeatedly asking for permission or documentary ownership proof. Preserve prior authorization within the same task.
+
+The acknowledgment is not blanket approval for every future request and is not proof of authority over remote systems. Clear contrary evidence, server access denial or a request for unauthorized privilege cannot be overridden by assuming ownership. Continue supported inspection and authorized work rather than broadening access.
 
 ## Scope throughout the task
 
